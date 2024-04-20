@@ -1,9 +1,10 @@
 import 'package:bloc_learn01/pages/counter/app.dart';
+import 'package:bloc_learn01/pages/infinite_list/view/article_list_app.dart';
 import 'package:bloc_learn01/pages/timer/view/app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const TimerApp());
+  runApp(const ArticleListApp());
 }
 
 class MyApp extends StatelessWidget {
