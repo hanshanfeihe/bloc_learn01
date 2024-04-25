@@ -6,14 +6,15 @@ import 'package:bloc_learn01/pages/infinite_list/bloc/article_state.dart';
 import 'package:bloc_learn01/pages/infinite_list/models/article.dart';
 import 'package:dio/dio.dart';
 
-class ArticleBloc extends Bloc<ArticleEvent,ArticleState>{
-  ArticleBloc(this.dio):super(ArticleState()){
+class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
+  ArticleBloc(this.dio) : super(ArticleState()) {
     on<ArticleFetched>(_onArticleFetched);
   }
   final Dio dio;
-  Future<void> _onArticleFetched(ArticleFetched event,Emitter<ArticleState> emit) async{
-    if(state.hasReachedMax??false)return;
-    try{
+  Future<void> _onArticleFetched(
+      ArticleFetched event, Emitter<ArticleState> emit) async {
+    if (state.hasReachedMax ?? false) return;
+    try {
       print("执行xxx${state.articleLoadState}");
       if (state.articleLoadState == ArticleLoadState.initial) {
         final pageArticles = await _fetchArticles();
@@ -21,31 +22,43 @@ class ArticleBloc extends Bloc<ArticleEvent,ArticleState>{
         return emit(state.copyWith(
           articleLoadState: ArticleLoadState.success,
           pageArticles: pageArticles,
-          articleList: pageArticles.articleList??[],
+          articleList: pageArticles.articleList ?? [],
           hasReachedMax: false,
         ));
-      }else{
-        final pageArticles = await _fetchArticles(state.pageArticles?.curPage??0);
+      } else {
+        emit(state.copyWith(
+          articleLoadState: ArticleLoadState.loading,
+          pageArticles: state.pageArticles,
+          articleList: state.articleList,
+          hasReachedMax: false,
+        ));
+        final pageArticles =
+            await _fetchArticles(state.pageArticles?.curPage ?? 0);
         pageArticles.articleList!.isEmpty
             ? emit(state.copyWith(hasReachedMax: true))
             : emit(
-          state.copyWith(
-            articleLoadState: ArticleLoadState.success,
-            articleList: List.of(state.articleList)..addAll(pageArticles.articleList??[]),
-            hasReachedMax: false,
-          ),
-        );
+                state.copyWith(
+                  pageArticles: pageArticles,
+                  articleLoadState: ArticleLoadState.success,
+                  articleList: List.of(state.articleList)
+                    ..addAll(pageArticles.articleList ?? []),
+                  hasReachedMax: false,
+                ),
+              );
       }
-    }catch(err){
+    } catch (err) {
       emit(state.copyWith(articleLoadState: ArticleLoadState.failure));
     }
   }
-  Future<ArticleLists> _fetchArticles([int page = 0]) async{
-    final response = await dio.get('https://www.wanandroid.com/article/list/$page/json');
+
+  Future<ArticleLists> _fetchArticles([int page = 0]) async {
+    print("请求");
+    final response =
+        await dio.get('https://www.wanandroid.com/article/list/$page/json');
     if (response.statusCode == 200) {
-      try{
-        print("response:${ response.data['data']}");
-      }catch(err){
+      try {
+        print("response:${response.data['data']}");
+      } catch (err) {
         print("err:$err");
       }
       return ArticleLists.fromJson(response.data['data']);

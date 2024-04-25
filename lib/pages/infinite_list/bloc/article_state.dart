@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../models/article.dart';
 
-enum ArticleLoadState {initial,success,failure}
+enum ArticleLoadState {initial,success,failure,loading}
 final class ArticleState extends Equatable{
   final List<Article> articleList;
   ArticleLists? pageArticles;
