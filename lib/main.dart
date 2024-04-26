@@ -1,10 +1,12 @@
 import 'package:bloc_learn01/pages/counter/app.dart';
 import 'package:bloc_learn01/pages/infinite_list/view/article_list_app.dart';
+import 'package:bloc_learn01/pages/login/view/entry/app.dart';
 import 'package:bloc_learn01/pages/timer/view/app.dart';
+import 'package:bloc_learn01/test_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const ArticleListApp());
+  runApp(const App());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const TestPage(),
     );
   }
 }
